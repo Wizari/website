@@ -7,6 +7,10 @@ import {MainFrameComponent} from './main-frame/main-frame.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatSliderModule} from "@angular/material/slider";
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
+import {MatNativeDateModule} from "@angular/material/core";
+import {MaterialModule} from "../material/material.module";
 
 
 @NgModule({
@@ -19,7 +23,12 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatSliderModule,
-    MatSidenavModule
+    MatSidenavModule,
+    FormsModule,
+    HttpClientModule,
+    MatNativeDateModule,
+    MaterialModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
