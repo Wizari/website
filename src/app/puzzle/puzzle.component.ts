@@ -12,8 +12,18 @@ import { Application } from 'pixi.js';
   styleUrls: ['./puzzle.component.scss']
 })
 
+
 export class PuzzleComponent implements OnInit {
   public app!: Application
+  // public let x = 114.5
+  // let y = 34
+  // let width = 92.8
+  // let height = 93.3
+
+  private x: number  = 114.5
+  private y: number  = 34
+  private width: number  = 92.8
+  private height: number  = 93.3
 
   @Input()
   public devicePixelRatio = window.devicePixelRatio || 1;
@@ -47,11 +57,18 @@ export class PuzzleComponent implements OnInit {
     field.x = this.app.screen.width / 2;
     field.y = this.app.screen.height / 2;
     field.scale.set(0.5, 0.5)
-
-
-
     this.app.stage.addChild(field);
 
+
+    // let x = 114.5
+    // let y = 34
+    // let width = 92.8
+    // let height = 93.3
+    const graphics = new PIXI.Graphics();
+    graphics.beginFill(0xeee4da);
+    graphics.drawRect(this.x, this.y, this.width, this.height);
+    graphics.endFill();
+    this.app.stage.addChild(graphics)
     // this.resize();
   }
 
