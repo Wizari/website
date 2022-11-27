@@ -3,23 +3,19 @@
 import * as PIXI from 'pixi.js';
 import { OnInit, Component, ElementRef, Input, HostListener, NgZone, OnDestroy } from '@angular/core';
 // import { Application, ApplicationOptions } from 'pixi.js';
-import { Application } from 'pixi.js';
+// import { Application } from 'pixi.js';
 
 @Component({
   selector: 'app-puzzle',
   template: '',
+  // template: '<div (keyup.arrowup)="Move(\'UP\')"></div>',
   // templateUrl: './puzzle.component.html',
   styleUrls: ['./puzzle.component.scss']
 })
 
 
 export class PuzzleComponent implements OnInit {
-  public app!: Application
-  // public let x = 114.5
-  // let y = 34
-  // let width = 92.8
-  // let height = 93.3
-
+  public app!: PIXI.Application
   private x: number  = 114.5
   private y: number  = 34
   private width: number  = 92.8
@@ -39,8 +35,6 @@ export class PuzzleComponent implements OnInit {
       backgroundColor: 0xfaf8ef,
       width: 640,
       height: 480
-      // width: 240,
-      // height: 280
     })
     });
     this.elementRef.nativeElement.appendChild(this.app!.view);
@@ -60,10 +54,6 @@ export class PuzzleComponent implements OnInit {
     this.app.stage.addChild(field);
 
 
-    // let x = 114.5
-    // let y = 34
-    // let width = 92.8
-    // let height = 93.3
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xeee4da);
     graphics.drawRect(this.x, this.y, this.width, this.height);
@@ -94,4 +84,26 @@ export class PuzzleComponent implements OnInit {
     this.destroy();
   }
 
+  @HostListener('window:keydown.arrowup', [])
+  onArrowUp() {
+    console.log('arrowup')
+  }
+
+  @HostListener('window:keydown.arrowdown', [])
+  onArrowDown() {
+    console.log('arrowdown')
+  }
+
+  @HostListener('window:keydown.arrowleft', [])
+  onArrowLeft() {
+    console.log('arrowleft')
+  }
+
+  @HostListener('window:keydown.arrowright', [])
+  onArrowRight() {
+    console.log('arrowright')
+  }
+
+
 }
+

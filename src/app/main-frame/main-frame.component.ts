@@ -34,33 +34,8 @@ export class MainFrameComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
-  }
 
+  }
   // shouldRun = /(^|.)(stackblitz|webcontainer).(io|com)$/.test(window.location.host);
   shouldRun = true;
-
-  goToGamePuzzle() {
-    this.router.navigate(['/puzzle']);
-    // this.dictionariesVisible = true;
-    // this.createDictionariesPageVisible = false;
-    // this.createUnitPageVisible = false;
-    // this.unitVisible = false;
-
-  }
-
 }
-
-
-
-
-
-//   OnInit {
-//   showFiller = false;
-//
-//
-//   constructor() { }
-//
-//   ngOnInit(): void {
-//   }
-//
-// }
