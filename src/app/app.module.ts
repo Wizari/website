@@ -11,8 +11,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MaterialModule} from "../material/material.module";
-import { PuzzleComponent } from './puzzle/component/puzzle.component';
+import {PuzzleComponent} from './puzzle/component/puzzle.component';
 import {Logic} from "./puzzle/logic/Logic";
+import {Cells} from "./puzzle/units/Cells";
 
 
 @NgModule({
@@ -34,8 +35,10 @@ import {Logic} from "./puzzle/logic/Logic";
     ReactiveFormsModule,
   ],
   providers: [
-    {provide: Screen, useClass: Logic, multi: true},
+    Logic,
+    Cells,
 
+    // {provide: Screen, useClass: Logic, multi: true},
   ],
   bootstrap: [AppComponent]
 })

@@ -1,14 +1,19 @@
 import {Injectable} from "@angular/core";
+import {Cells} from "../units/Cells";
+import {PuzzleComponent} from "../component/puzzle.component";
 
 
-// @Injectable()
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class Logic {
-  constructor() {
+  constructor(private cell: Cells) {
+  // constructor(private puzzleComponent: PuzzleComponent) {
   }
 
   init() {
     console.log('11')
+    this.cell.init()
+    // const cells: Cells = new Cells(this.puzzleComponent)
+
 
   }
 
