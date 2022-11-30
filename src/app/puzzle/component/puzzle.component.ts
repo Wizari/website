@@ -11,7 +11,8 @@ import {CellGraphics} from "../units/CellGraphics";
 
 @Injectable()
 export class PuzzleComponent implements OnInit {
-  private _app!: PIXI.Application
+  // private _app!: PIXI.Application
+  public _app!: PIXI.Application
 
   private x: number = 114.5
   private y: number = 34
@@ -51,12 +52,12 @@ export class PuzzleComponent implements OnInit {
       })
     });
     this.elementRef.nativeElement.appendChild(this.app.view);
-    this.logic = new Logic();
+    this.logic = new Logic(this);
     // this.logic.init()
 
     await this.newField()
-
-    await this._app.stage.addChild(new CellGraphics(this.x, this.y))
+    // await this._app.stage.addChild(new CellGraphics(this.x, this.y))
+    this.logic.createStartElements()
   }
 
   ngOnInit(): void {

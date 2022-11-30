@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 // import {Cell} from "./Cell";
 import {PuzzleComponent} from "../component/puzzle.component";
 import {CellGraphics} from "./CellGraphics";
+import * as PIXI from "pixi.js";
 
 
 @Injectable()
@@ -23,6 +24,11 @@ export class CellsManager {
     // let test: Cell = new Cell(this.puzzleComponent);
     // test.value = 10
     // console.log(test)
+  }
+
+  test(app: PIXI.Application) {
+    app.stage.addChild(new CellGraphics(200, 200))
+
   }
 
 }
