@@ -1,6 +1,6 @@
 import {Injectable, Input, Output} from "@angular/core";
 import * as PIXI from "pixi.js";
-import {Cells} from "./Cells";
+import {CellsManager} from "./CellsManager";
 import {PuzzleComponent} from "../component/puzzle.component";
 
 
@@ -19,7 +19,7 @@ this.createCell()
 
   }
 
-  async createCell() {
+  public async createCell() {
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xeee4da);
     graphics.drawRect(this.x, this.y, this.width, this.height);

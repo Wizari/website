@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
-import {Component, ElementRef, HostListener, Input, NgZone, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, HostListener, Injectable, Input, NgZone, OnInit, Output} from '@angular/core';
 import {Logic} from "../logic/Logic";
+import {CellGraphics} from "../units/CellGraphics";
 
 @Component({
   selector: 'app-puzzle',
@@ -8,7 +9,7 @@ import {Logic} from "../logic/Logic";
   styleUrls: ['./puzzle.component.scss']
 })
 
-
+@Injectable()
 export class PuzzleComponent implements OnInit {
   private _app!: PIXI.Application
 
@@ -16,6 +17,8 @@ export class PuzzleComponent implements OnInit {
   private y: number = 34
   private width: number = 92.8
   private height: number = 93.3
+  private logic!: Logic;
+
 
   @Input()
   public devicePixelRatio = window.devicePixelRatio || 1;
@@ -30,7 +33,7 @@ export class PuzzleComponent implements OnInit {
   }
 
   constructor(
-    private logic: Logic,
+    // private logic: Logic,
     private ngZone: NgZone,
     private elementRef: ElementRef
   ) {
@@ -48,17 +51,12 @@ export class PuzzleComponent implements OnInit {
       })
     });
     this.elementRef.nativeElement.appendChild(this.app.view);
+    this.logic = new Logic();
+    // this.logic.init()
 
     await this.newField()
 
-    const graphics = new PIXI.Graphics();
-    graphics.beginFill(0xeee4da);
-    graphics.drawRect(this.x, this.y, this.width, this.height);
-    graphics.endFill();
-    await this._app.stage.addChild(graphics)
-
-    this.logic.init()
-    // const logic: Logic = new Logic()
+    await this._app.stage.addChild(new CellGraphics(this.x, this.y))
   }
 
   ngOnInit(): void {
