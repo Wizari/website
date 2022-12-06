@@ -14,7 +14,7 @@ import { gsap } from "gsap";
 
 @Injectable()
 export class Logic {
-  private cellArr: CellGraphics[] = []
+  private cellArr: any [] = []
   private app = this.puzzleComponent._app
 
   constructor(private puzzleComponent: PuzzleComponent) {
@@ -26,11 +26,31 @@ export class Logic {
   }
 
   createStartElements() {
+    let x = 114.5;
+    let y = 34;
+    let step = 106
+    // 220.5, 54
+
+    this.cellArr = [
+      null , null , null ,new CellGraphics(x+step*3, y),
+      new CellGraphics(x, y+step) ,new CellGraphics(x+step, y+step), null, null,
+      null ,new CellGraphics(x+step, y+step*2), null, null,
+      null ,null, null, new CellGraphics(x+step*3, y+step*3)
+    ]
+    for (let i = 0; i < this.cellArr.length; i++) {
+      if (this.cellArr[i] != null) {
+        this.puzzleComponent._app.stage.addChild(this.cellArr[i])
+      }
+    }
+    // var test = this.cellArr[1] as CellGraphics
+    // test.setValue(6)
+
+
     // private x: number = 114.5
     // private y: number = 34
-    this.cellArr = [new CellGraphics(114.5, 34), new CellGraphics(200, 200)]
-    this.puzzleComponent._app.stage.addChild(this.cellArr[0])
-    this.puzzleComponent._app.stage.addChild(this.cellArr[1])
+    // this.cellArr = [new CellGraphics(114.5, 34), new CellGraphics(200, 200)]
+    // this.puzzleComponent._app.stage.addChild(this.cellArr[1])
+    // this.puzzleComponent._app.stage.addChild(this.cellArr[2])
     // this.removeCell(1)
     // this.puzzleComponent._app.ticker.
     // this.puzzleComponent._app.stage.addChild(new CellGraphics(100, 200))
