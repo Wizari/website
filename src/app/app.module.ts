@@ -20,7 +20,7 @@ import {CellsManager} from "./puzzle/units/CellsManager";
   declarations: [
     AppComponent,
     MainFrameComponent,
-    PuzzleComponent
+    PuzzleComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,6 +33,7 @@ import {CellsManager} from "./puzzle/units/CellsManager";
     MatNativeDateModule,
     MaterialModule,
     ReactiveFormsModule,
+
   ],
   providers: [
     Logic,
