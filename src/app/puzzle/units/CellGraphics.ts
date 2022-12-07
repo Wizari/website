@@ -41,6 +41,8 @@ export class CellGraphics extends PIXI.Graphics {
   resetMoveStep() {
     this._moveX = 0
     this._moveY = 0
+    this.playText.text = this._value + ""
+
   }
 
   getValue(): number {
@@ -49,7 +51,7 @@ export class CellGraphics extends PIXI.Graphics {
 
   setValue(value: number) {
     this._value = value;
-    this.playText.text = value + ""
+    // this.playText.text = value + ""
   }
 
 

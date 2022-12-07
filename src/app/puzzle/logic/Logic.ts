@@ -7,7 +7,6 @@ import { gsap } from "gsap";
 import {repeat} from "rxjs/operators";
 import {formatI18nPlaceholderName} from "@angular/compiler/src/render3/view/i18n/util";
 // import { gsap } from "gsap";
-
 // import { PixiPlugin } from "gsap/PixiPlugin";
 
 
@@ -21,6 +20,7 @@ export class Logic {
   x: number = 114.5;
   y: number = 34;
   step: number = 106
+  controlLocked: boolean = false
 
   constructor(private puzzleComponent: PuzzleComponent) {
 
@@ -69,74 +69,48 @@ export class Logic {
 
   }
 
-
   async moveUp() {
-    // let tempArr = this.cellArr
-    // let tempArr: any [] = []
-    this.tempArr = []
+    // if (!this.controlLocked){
+    //   this.controlLocked = true
+      this.tempArr = []
     for (let y = 0; y < this.cellArr.length; y++) {
       this.tempArr.push(this.cellArr[y])
     }
     console.log("new ", this.tempArr)
     let squareSideLength = Math.sqrt(this.cellArr.length);
     for (let i = 0; i < squareSideLength; i++) {
-      // let iterationComplete: boolean = true
       let position = 0 + i
       let arrCountPosition = 0 + i
-      // while (iterationComplete) {
-      let move: boolean = false;
       let moveCount: number = 0;
       let tempCell = null
       let cellPosition = 0
       let arrCount: number[] = []
-      let arrCountNotNull: number[] = []
 
       for (let n = 0; n < squareSideLength; n++, arrCountPosition += squareSideLength) {
-        if (this.cellArr[arrCountPosition] != null) {
-          arrCountNotNull.push(arrCountPosition);
-        }
         arrCount.push(arrCountPosition)
       }
 
       for (let j = 0; j < squareSideLength; j++, position += squareSideLength) {
-        // console.log(cellPosition)
-
         if (tempCell != null && this.cellArr[position] != null) {
           if (tempCell.getValue() == this.cellArr[position].getValue()) {
             moveCount++
             this.cellArr[position].setMoveY(moveCount)
-            // this.cellArr[position].setValue(this.cellArr[position].getValue() * 2)
             this.tempArr[position].setValue(this.cellArr[position].getValue() * 2)
-            // console.log(cellPosition)
-            // this.cellArr[cellPosition].setDestroyThis(true)
-            // this.cellArr[arrCount[j - moveCount]].setDestroyThis(true)
             tempCell.setDestroyThis(true)
             this.tempArr[position] = null
-            // tempArr[position].destroy()
-            // let cell: CellGraphics = new CellGraphics(200,200)
-            // cell.setDestroyThis(true)
-            // cell.removeChild()
-            // this.tempArr[cellPosition] = this.cellArr[position]
             this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
-
-
             tempCell = null
             cellPosition = 0
-            // console.log(moveCount)
             continue
           }
         }
         if (this.cellArr[position] != null) {
           this.cellArr[position].setMoveY(moveCount)
-          // this.cellArr[position].setDestroyThis(true)
           if (moveCount != 0) {
             this.tempArr[position] = null;
-            // tempArr[position].destroy()
-            // this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
             this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
           }
         }
-
         if (this.cellArr[position] == null) {
           moveCount++
         } else {
@@ -144,14 +118,9 @@ export class Logic {
           cellPosition = position
         }
       }
-      // await this.arrayUpdate(this.tempArr)
-      // await this.resetCell(this.cellArr)
     }
-
-    console.log("1111111111 - ", this.tempArr)
-
     await this.animate(this.cellArr)
-
+  // }
   }
 
   resetCell(arr: any[]) {
@@ -159,23 +128,16 @@ export class Logic {
       if (arr[i] != null)
       arr[i].resetMoveStep()
     }
-
-    console.log("cellArr: ", this.cellArr)
-    console.log("--------------")
-    console.log("temp: ", this.tempArr)
     for (let i = 0; i < this.cellArr.length; i++) {
       if (this.cellArr[i] != null) {
         console.log("temp: ", i, " - ", this.cellArr[i].getMoveY());
       }
     }
+    // this.controlLocked = false
 
   }
 
   async arrayUpdate(array: any[]) {
-    // console.log(this.cellArr)
-
-    // this.cellArr = array
-    // this.cellArr = []
     for (let j = 0; j < array.length; j++) {
       if (this.cellArr[j] != null && this.cellArr[j].getDestroyThis()) {
         console.log(j," * ", this.cellArr[j].getDestroyThis() )
@@ -184,25 +146,10 @@ export class Logic {
         this.cellArr[j].destroy();
         this.cellArr[j] = null;
       }
-      // this.cellArr[j] = []
-      // this.cellArr[j] = null
-      // this.cellArr[j] = array[j]
-      // console.log(this.cellArr[j] )
-
     }
-    // this.cellArr = []
-
-    // for (let y = 0; y < this.tempArr.length; y++) {
-    //   this.cellArr.push(this.tempArr[y])
-    // }
-    // console.log(this.cellArr)
-
-    // this.cellArr = array
     this.cellArr = this.tempArr
     this.resetCell(this.cellArr)
-
   }
-
 
   animate(array: any[]) {
     let notNullElements = 0
@@ -217,16 +164,9 @@ export class Logic {
       if (array[i] != null) {
         let cell: CellGraphics = array[i]
         gsap.to(cell, {
-          // x: 200, y: 0, duration: 0.51, repeat: 0, yoyo: false,
-        //   x: cell.x, y:cell.y - (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
-        // });
         x: cell.x, y:cell.y - (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
-        // }).then(result => console.log(result));
-        // }).then(result => {this.arrayUpdate(this.tempArr)});
         }).then(result => {count++
-          // console.log("222")
           if (count == notNullElements) {
-            // console.log("111")
             this.arrayUpdate(this.tempArr)
           }
         });
@@ -235,87 +175,91 @@ export class Logic {
 
   }
 
-  // this.cellArr[array[j]].destroy();
-  // this.app.stage.removeChild(this.cellArr[j])
-  // this.cellArr[j].removeChild()
-  // this.removeCell(this.cellArr[j])
-  // let cell: CellGraphics = this.cellArr[j]
-  // this.app.stage.removeChild(cell)
-  // this.app.stage.removeChild( this.cellArr[j] );
-  // cell.destroy();
-  // this.cellArr[j].destroy();
-  // this.cellArr[j] = null;
+  async moveDown() {
+    // if (!this.controlLocked){
+    //   this.controlLocked = true
 
-  // moveUp() {
-  //   let tempArr = this.cellArr
-  //
-  //
-  //   let squareSideLength = Math.sqrt(this.cellArr.length);
-  //
-  //   for (let i = 0; i < squareSideLength; i++) {
-  //     let iterationComplete: boolean = true
-  //     let position = 0 + i
-  //     // while (iterationComplete) {
-  //     let move: boolean = false;
-  //     let tempCell = null
-  //
-  //
-  //     for (let j = 0; j < squareSideLength; j++, position += squareSideLength) {
-  //
-  //       if (move && this.cellArr[position] != null) {
-  //         this.cellArr[position].setMoveY((this.cellArr[position].getMoveY()) + 1)
-  //       }
-  //       if (tempCell != null && this.cellArr[position] != null) {
-  //         if (tempCell.getValue() == this.cellArr[position].getValue()) {
-  //           this.cellArr[position].setMoveY((this.cellArr[position].getMoveY()) + 1)
-  //           tempCell = null
-  //         }
-  //       }
-  //
-  //       move = false;
-  //       tempCell = this.cellArr[position]
-  //
-  //       if (this.cellArr[position] == null) {
-  //         move = true
-  //         // tempCell = null
-  //
-  //       } else {
-  //         // tempCell = this.cellArr[position]
-  //       }
-  //
-  //
-  //       if (this.cellArr[position] != null) {
-  //         // var test = this.cellArr[position] as CellGraphics
-  //         let x: number = this.cellArr[position].getMoveY()
-  //         // console.log(this.cellArr[position].getMoveY as CellGraphics)
-  //         // console.log(this.cellArr[position].getMoveY as number)
-  //         // console.log(x)
-  //       }
-  //       // console.log(this.cellArr[position].getMoveY + "-");
-  //
-  //
-  //     }
-  //
-  //
-  //     iterationComplete = false
-  //     // }
-  //   }
-  //   gsap.to(this.cellArr[0], {
-  //     x: 200, y: 0, duration: 0.51, repeat: 0, yoyo: false,
-  //   });
-  // }
+      this.tempArr = []
+    for (let y = 0; y < this.cellArr.length; y++) {
+      this.tempArr.push(this.cellArr[y])
+    }
+    console.log("new ", this.tempArr)
+    let squareSideLength = Math.sqrt(this.cellArr.length);
+    for (let i = 0; i < squareSideLength; i++) {
+      let position = 0 + i
+      let arrCountPosition = 0 + i
+      let moveCount: number = 0;
+      let tempCell = null
+      let cellPosition = 0
+      let arrCount: number[] = []
 
+      for (let n = 0; n < squareSideLength; n++, arrCountPosition += squareSideLength) {
+        // arrCount.push(arrCountPosition)
+        arrCount.unshift(arrCountPosition)
 
-  // gsap.to(this.cellArr[0], {
-  //   x: 200, y: 0, duration: 0.51, repeat: 0, yoyo: false,
-  // });
+      }
+      console.log(arrCount)
 
+      for (let j = 0; j < squareSideLength; j++) {
+        position = arrCount[j]
 
-  moveDown() {
-    console.log('moveDown')
+        if (tempCell != null && this.cellArr[position] != null) {
+          if (tempCell.getValue() == this.cellArr[position].getValue()) {
+            moveCount++
+            this.cellArr[position].setMoveY(moveCount)
+            this.tempArr[position].setValue(this.cellArr[position].getValue() * 2)
+            tempCell.setDestroyThis(true)
+            this.tempArr[position] = null
+            this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
+            tempCell = null
+            // cellPosition = 0
+            continue
+          }
+        }
+
+        if (this.cellArr[position] != null) {
+          this.cellArr[position].setMoveY(moveCount)
+          console.log("jj", j)
+          console.log("position", position)
+          tempCell = this.cellArr[position]
+
+          if (moveCount != 0) {
+            this.tempArr[position] = null;
+            this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
+          }
+        }
+        if (this.cellArr[position] == null) {
+          moveCount++
+        } else {
+          // console.log("jj", j)
+          // console.log("position", position)
+          // tempCell = this.cellArr[position]
+          // cellPosition = position
+        }
+      }
+    // }
+    }
+
+    // await this.animate(this.cellArr)
+    let notNullElements = 0
+    let count = 0
+
     for (let i = 0; i < this.cellArr.length; i++) {
-      console.log(i)
-
+      if (this.cellArr[i] != null) {
+        notNullElements++
+      }
+    }
+    for (let i = 0; i < this.cellArr.length; i++) {
+      if (this.cellArr[i] != null) {
+        let cell: CellGraphics = this.cellArr[i]
+        gsap.to(cell, {
+          x: cell.x, y:cell.y + (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
+        }).then(result => {count++
+          if (count == notNullElements) {
+            this.arrayUpdate(this.tempArr)
+          }
+        });
+      }
     }
 
   }
@@ -405,5 +349,167 @@ export class Logic {
 //   // this.cellArr = array
 //
 //   this.resetCell(this.cellArr)
+//
+// }
+
+
+// async moveUp() {
+//   this.tempArr = []
+//   for (let y = 0; y < this.cellArr.length; y++) {
+//     this.tempArr.push(this.cellArr[y])
+//   }
+//   console.log("new ", this.tempArr)
+//   let squareSideLength = Math.sqrt(this.cellArr.length);
+//   for (let i = 0; i < squareSideLength; i++) {
+//     // let iterationComplete: boolean = true
+//     let position = 0 + i
+//     let arrCountPosition = 0 + i
+//     // while (iterationComplete) {
+//     let move: boolean = false;
+//     let moveCount: number = 0;
+//     let tempCell = null
+//     let cellPosition = 0
+//     let arrCount: number[] = []
+//     let arrCountNotNull: number[] = []
+//
+//     for (let n = 0; n < squareSideLength; n++, arrCountPosition += squareSideLength) {
+//       // if (this.cellArr[arrCountPosition] != null) {
+//       //   arrCountNotNull.push(arrCountPosition);
+//       // }
+//       arrCount.push(arrCountPosition)
+//     }
+//
+//     for (let j = 0; j < squareSideLength; j++, position += squareSideLength) {
+//       if (tempCell != null && this.cellArr[position] != null) {
+//         if (tempCell.getValue() == this.cellArr[position].getValue()) {
+//           moveCount++
+//           this.cellArr[position].setMoveY(moveCount)
+//           // this.cellArr[position].setValue(this.cellArr[position].getValue() * 2)
+//           this.tempArr[position].setValue(this.cellArr[position].getValue() * 2)
+//           // console.log(cellPosition)
+//           // this.cellArr[cellPosition].setDestroyThis(true)
+//           // this.cellArr[arrCount[j - moveCount]].setDestroyThis(true)
+//           tempCell.setDestroyThis(true)
+//           this.tempArr[position] = null
+//           // tempArr[position].destroy()
+//           // let cell: CellGraphics = new CellGraphics(200,200)
+//           // cell.setDestroyThis(true)
+//           // cell.removeChild()
+//           // this.tempArr[cellPosition] = this.cellArr[position]
+//           this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
+//
+//
+//           tempCell = null
+//           cellPosition = 0
+//           // console.log(moveCount)
+//           continue
+//         }
+//       }
+//       if (this.cellArr[position] != null) {
+//         this.cellArr[position].setMoveY(moveCount)
+//         // this.cellArr[position].setDestroyThis(true)
+//         if (moveCount != 0) {
+//           this.tempArr[position] = null;
+//           // tempArr[position].destroy()
+//           // this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
+//           this.tempArr[arrCount[j - moveCount]] = this.cellArr[position]
+//         }
+//       }
+//
+//       if (this.cellArr[position] == null) {
+//         moveCount++
+//       } else {
+//         tempCell = this.cellArr[position]
+//         cellPosition = position
+//       }
+//     }
+//     // await this.arrayUpdate(this.tempArr)
+//     // await this.resetCell(this.cellArr)
+//   }
+//
+//   console.log("1111111111 - ", this.tempArr)
+//
+//   await this.animate(this.cellArr)
+//
+// }
+//
+// resetCell(arr: any[]) {
+//   for (let i = 0; i < arr.length; i++) {
+//     if (arr[i] != null)
+//       arr[i].resetMoveStep()
+//   }
+//
+//   console.log("cellArr: ", this.cellArr)
+//   console.log("--------------")
+//   console.log("temp: ", this.tempArr)
+//   for (let i = 0; i < this.cellArr.length; i++) {
+//     if (this.cellArr[i] != null) {
+//       console.log("temp: ", i, " - ", this.cellArr[i].getMoveY());
+//     }
+//   }
+//
+// }
+//
+// async arrayUpdate(array: any[]) {
+//   // console.log(this.cellArr)
+//
+//   // this.cellArr = array
+//   // this.cellArr = []
+//   for (let j = 0; j < array.length; j++) {
+//     if (this.cellArr[j] != null && this.cellArr[j].getDestroyThis()) {
+//       console.log(j," * ", this.cellArr[j].getDestroyThis() )
+//       console.log(j," * ", this.cellArr[j].y )
+//       this.app.stage.removeChild( this.cellArr[j] );
+//       this.cellArr[j].destroy();
+//       this.cellArr[j] = null;
+//     }
+//     // this.cellArr[j] = []
+//     // this.cellArr[j] = null
+//     // this.cellArr[j] = array[j]
+//     // console.log(this.cellArr[j] )
+//
+//   }
+//   // this.cellArr = []
+//
+//   // for (let y = 0; y < this.tempArr.length; y++) {
+//   //   this.cellArr.push(this.tempArr[y])
+//   // }
+//   // console.log(this.cellArr)
+//
+//   // this.cellArr = array
+//   this.cellArr = this.tempArr
+//   this.resetCell(this.cellArr)
+//
+// }
+//
+//
+// animate(array: any[]) {
+//   let notNullElements = 0
+//   let count = 0
+//
+//   for (let i = 0; i < array.length; i++) {
+//     if (array[i] != null) {
+//       notNullElements++
+//     }
+//   }
+//   for (let i = 0; i < array.length; i++) {
+//     if (array[i] != null) {
+//       let cell: CellGraphics = array[i]
+//       gsap.to(cell, {
+//         // x: 200, y: 0, duration: 0.51, repeat: 0, yoyo: false,
+//         //   x: cell.x, y:cell.y - (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
+//         // });
+//         x: cell.x, y:cell.y - (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
+//         // }).then(result => console.log(result));
+//         // }).then(result => {this.arrayUpdate(this.tempArr)});
+//       }).then(result => {count++
+//         // console.log("222")
+//         if (count == notNullElements) {
+//           // console.log("111")
+//           this.arrayUpdate(this.tempArr)
+//         }
+//       });
+//     }
+//   }
 //
 // }
