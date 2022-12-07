@@ -11,6 +11,7 @@ export class CellGraphics extends PIXI.Graphics {
   private widthMy: number = 92.8
   private heightMy: number = 93.3
   private playText!: PIXI.Text
+  private _destroyThis: boolean = false
 
   private _moveX: number = 0
   private _moveY: number = 0
@@ -18,20 +19,7 @@ export class CellGraphics extends PIXI.Graphics {
   constructor(x: number, y: number) {
     super();
     const style = new PIXI.TextStyle({
-      // fontFamily: 'Arial',
       fontSize: 36,
-      // fontStyle: 'italic',
-      // fontWeight: 'bold',
-      // fill: ['#ffffff', '#00ff99'], // gradient
-      // stroke: '#4a1850',
-      // strokeThickness: 5,
-      // dropShadow: true,
-      // dropShadowColor: '#000000',
-      // dropShadowBlur: 4,
-      // dropShadowAngle: Math.PI / 6,
-      // dropShadowDistance: 6,
-      // wordWrap: true,
-      // wordWrapWidth: 440,
     });
 
     this.playText = new PIXI.Text('2', style);
@@ -44,10 +32,16 @@ export class CellGraphics extends PIXI.Graphics {
     this.endFill();
     this.addChild(this.playText)
 
-    this.position.x = x;
-    this.position.y = y;
+    // this.position.x = x;
+    // this.position.y = y;
+    this.x = x;
+    this.y = y;
   }
 
+  resetMoveStep() {
+    this._moveX = 0
+    this._moveY = 0
+  }
 
   getValue(): number {
     return this._value;
@@ -73,5 +67,13 @@ export class CellGraphics extends PIXI.Graphics {
 
   setMoveY(value: number) {
     this._moveY = value;
+  }
+
+  getDestroyThis(): boolean {
+    return this._destroyThis;
+  }
+
+  setDestroyThis(value: boolean) {
+    this._destroyThis = value;
   }
 }
