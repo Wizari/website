@@ -13,7 +13,6 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {MaterialModule} from "../material/material.module";
 import {PuzzleComponent} from './puzzle/component/puzzle.component';
 import {Logic} from "./puzzle/logic/Logic";
-import {CellsManager} from "./puzzle/units/CellsManager";
 
 
 @NgModule({
@@ -37,7 +36,6 @@ import {CellsManager} from "./puzzle/units/CellsManager";
   ],
   providers: [
     Logic,
-    CellsManager,
 
     // {provide: Screen, useClass: Logic, multi: true},
   ],

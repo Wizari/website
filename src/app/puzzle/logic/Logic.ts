@@ -1,24 +1,20 @@
 import {Injectable} from "@angular/core";
 import {PuzzleComponent} from "../component/puzzle.component";
 import {CellGraphics} from "../units/CellGraphics";
-// import * as PIXI from 'pixi.js';
-// import * as TWEEN from '@tweenjs/tween.js'
 import {gsap} from "gsap";
 import {Side} from "../units/Side";
-// import { gsap } from "gsap";
-// import { PixiPlugin } from "gsap/PixiPlugin";
 
 
 @Injectable()
 export class Logic {
   private cellArr: any [] = []
   private tempArr: any [] = []
-
+  private cellArrLength: number = 4*4
   private app = this.puzzleComponent._app
-
   x: number = 114.5;
   y: number = 34;
   step: number = 106
+  animationDuration: number = 0.3
   controlLocked: boolean = false
 
   constructor(private puzzleComponent: PuzzleComponent) {
@@ -26,28 +22,54 @@ export class Logic {
   }
 
   init() {
-    console.log('11')
   }
 
   createStartElements() {
-    // let x = this.x
-    // let y = this.y
-    // let step = this.step
+    for (let i = 0; i < this.cellArrLength; i++) {
+      this.cellArr.push(null)
+    }
+    this.createRandomCell()
+    this.createRandomCell()
+    console.log(this.cellArr)
+  }
 
-    // this.crCell(,)
-    this.cellArr = [
-      this.crCell(1, 1), null, this.crCell(3, 1), this.crCell(4, 1),
-      null, this.crCell(2, 2), this.crCell(3, 2), null,
-      null, null, this.crCell(3, 3), null,
-      null, null, this.crCell(3, 4), this.crCell(4, 4),
-    ]
+  createRandomCell() {
+    let nullArr: any [] = []
+    let squareSideLength = Math.sqrt(this.cellArr.length);
     for (let i = 0; i < this.cellArr.length; i++) {
-      if (this.cellArr[i] != null) {
-        this.puzzleComponent._app.stage.addChild(this.cellArr[i])
-        // console.log(this.cellArr[i].getValue())
+      if (this.cellArr[i] == null) {
+        nullArr.push(i)
       }
     }
-    // this.app.stage.removeChild( this.cellArr[0] );
+    if (nullArr.length != 0) {
+      let random = Math.floor(Math.random() * (nullArr.length));
+      let positionX: number = 1;
+      let positionY: number = 1;
+
+      if (squareSideLength > nullArr[random]) {
+        this.cellArr[nullArr[random]] = this.crCell(nullArr[random] + 1, 1);
+        this.puzzleComponent._app.stage.addChild(this.cellArr[nullArr[random]]);
+      }
+
+
+      if (squareSideLength <= nullArr[random]) {
+        let arrPosition = nullArr[random] + 1
+        while (true) {
+          if (arrPosition > squareSideLength) {
+            arrPosition -= squareSideLength;
+            positionY++
+          } else {
+            positionX = arrPosition
+            break;
+          }
+        }
+        this.cellArr[nullArr[random]] = this.crCell(positionX, positionY);
+        this.puzzleComponent._app.stage.addChild(this.cellArr[nullArr[random]]);
+      }
+    } else {
+      console.log("****LOSE****")
+    }
+
 
   }
 
@@ -61,29 +83,36 @@ export class Logic {
   }
 
   async moveUp() {
-    this.moveCalculate(Side.UP)
-    this.animate(Side.UP)
+    if (!this.controlLocked) {
+      this.moveCalculate(Side.UP);
+      this.animate(Side.UP)
+    }
+
   }
 
   async moveDown() {
-    this.moveCalculate(Side.DOWN)
-    this.animate(Side.DOWN)
-
+    if (!this.controlLocked) {
+      this.moveCalculate(Side.DOWN)
+      this.animate(Side.DOWN)
+    }
   }
 
   async moveLeft() {
-    this.moveCalculate(Side.LEFT)
-    this.animate(Side.LEFT)
-
+    if (!this.controlLocked) {
+      this.moveCalculate(Side.LEFT)
+      this.animate(Side.LEFT)
+    }
   }
 
   async moveRight() {
-    this.moveCalculate(Side.RIGHT)
-    this.animate(Side.RIGHT)
-
+    if (!this.controlLocked) {
+      this.moveCalculate(Side.RIGHT)
+      this.animate(Side.RIGHT)
+    }
   }
 
   moveCalculate(side: Side) {
+    this.controlLocked = true
     this.tempArr = []
     for (let y = 0; y < this.cellArr.length; y++) {
       this.tempArr.push(this.cellArr[y])
@@ -110,8 +139,6 @@ export class Logic {
         }
         if (this.cellArr[position] != null) {
           this.cellArr[position].setMoveY(moveCount)
-          console.log("jj", j)
-          console.log("position", position)
           tempCell = this.cellArr[position]
           if (moveCount != 0) {
             this.tempArr[position] = null;
@@ -171,24 +198,23 @@ export class Logic {
     }
     for (let i = 0; i < this.cellArr.length; i++) {
       if (this.cellArr[i] != null) {
-        console.log("temp: ", i, " - ", this.cellArr[i].getMoveY());
       }
     }
-    console.log("1111111111111")
+    this.createRandomCell()
+    this.controlLocked = false
+
+
   }
 
   async arrayUpdate(array: any[]) {
     for (let j = 0; j < array.length; j++) {
       if (this.cellArr[j] != null && this.cellArr[j].getDestroyThis()) {
-        console.log(j, " * ", this.cellArr[j].getDestroyThis())
-        console.log(j, " * ", this.cellArr[j].y)
         this.app.stage.removeChild(this.cellArr[j]);
         this.cellArr[j].destroy();
         this.cellArr[j] = null;
       }
     }
     this.cellArr = this.tempArr
-    // this.resetCell(this.cellArr)
   }
 
   animate(side: Side) {
@@ -205,7 +231,11 @@ export class Logic {
         switch (side) {
           case Side.UP: {
             gsap.to(cell, {
-              x: cell.x, y: cell.y - (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
+              x: cell.x,
+              y: cell.y - (this.step * cell.getMoveY()),
+              duration: this.animationDuration,
+              repeat: 0,
+              yoyo: false,
             }).then(result => {
               count++
               if (count == notNullElements) {
@@ -217,7 +247,11 @@ export class Logic {
           }
           case Side.DOWN: {
             gsap.to(cell, {
-              x: cell.x, y: cell.y + (this.step * cell.getMoveY()), duration: 0.51, repeat: 0, yoyo: false,
+              x: cell.x,
+              y: cell.y + (this.step * cell.getMoveY()),
+              duration: this.animationDuration,
+              repeat: 0,
+              yoyo: false,
             }).then(result => {
               count++
               if (count == notNullElements) {
@@ -229,23 +263,33 @@ export class Logic {
           }
           case Side.LEFT: {
             gsap.to(cell, {
-              x: cell.x - (this.step * cell.getMoveY()), y: cell.y, duration: 0.51, repeat: 0, yoyo: false,
+              x: cell.x - (this.step * cell.getMoveY()),
+              y: cell.y,
+              duration: this.animationDuration,
+              repeat: 0,
+              yoyo: false,
             }).then(result => {
               count++
               if (count == notNullElements) {
                 this.arrayUpdate(this.tempArr).then(r => this.resetCell(this.cellArr)
-                )              }
+                )
+              }
             });
             break;
           }
           case Side.RIGHT: {
             gsap.to(cell, {
-              x: cell.x + (this.step * cell.getMoveY()), y: cell.y, duration: 0.51, repeat: 0, yoyo: false,
+              x: cell.x + (this.step * cell.getMoveY()),
+              y: cell.y,
+              duration: this.animationDuration,
+              repeat: 0,
+              yoyo: false,
             }).then(result => {
               count++
               if (count == notNullElements) {
                 this.arrayUpdate(this.tempArr).then(r => this.resetCell(this.cellArr)
-                )              }
+                )
+              }
             });
             break;
           }

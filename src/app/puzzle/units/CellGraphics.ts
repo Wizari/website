@@ -27,11 +27,9 @@ export class CellGraphics extends PIXI.Graphics {
     this.playText.y = 46
     this.playText.anchor.set(0.5);
     this.beginFill(0xeee4da);
-    // this.drawRect(this.xMy, this.yMy, this.widthMy, this.heightMy);
     this.drawRect(0, 0, this.widthMy, this.heightMy);
     this.endFill();
     this.addChild(this.playText)
-
     // this.position.x = x;
     // this.position.y = y;
     this.x = x;
