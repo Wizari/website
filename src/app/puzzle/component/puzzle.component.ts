@@ -33,6 +33,7 @@ export class PuzzleComponent implements OnInit {
   }
 
   async init() {
+    PIXI.utils.clearTextureCache()
     this.ngZone.runOutsideAngular(() => {
       this._app = new PIXI.Application({
         view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
