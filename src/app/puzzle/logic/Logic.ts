@@ -14,7 +14,8 @@ export class Logic {
   x: number = 114.5;
   y: number = 34;
   step: number = 106
-  animationDuration: number = 0.3
+  // animationDuration: number = 0.3
+  animationDuration: number = 0.15
   controlLocked: boolean = false
 
   constructor(private puzzleComponent: PuzzleComponent) {
