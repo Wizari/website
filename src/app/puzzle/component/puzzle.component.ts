@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import {Component, ElementRef, HostListener, Injectable, Input, NgZone, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, NgZone, OnInit} from '@angular/core';
 import {Logic} from "../logic/Logic";
 
 @Component({
@@ -12,7 +12,7 @@ import {Logic} from "../logic/Logic";
 export class PuzzleComponent implements OnInit {
   public _app!: PIXI.Application
   private logic!: Logic;
-
+  defaultTouch = {x: 0, y: 0, time: 0};
 
   // @Input()
   // public devicePixelRatio = window.devicePixelRatio || 1;
@@ -82,6 +82,7 @@ export class PuzzleComponent implements OnInit {
     this.logic.moveRight()
   }
 
+
   async newField() {
     const texture = await PIXI.Assets.load('assets/images/field.png');
     const field = PIXI.Sprite.from(texture);
@@ -90,6 +91,68 @@ export class PuzzleComponent implements OnInit {
     field.y = this._app.screen.height / 2;
     field.scale.set(0.5, 0.5)
     this._app.stage.addChild(field);
+  }
+
+  @HostListener('touchstart', ['$event'])
+  //@HostListener('touchmove', ['$event'])
+  @HostListener('touchend', ['$event'])
+  @HostListener('touchcancel', ['$event'])
+  // @ts-ignore
+  handleTouch(event) {
+    let touch = event.touches[0] || event.changedTouches[0];
+
+    // check the events
+    if (event.type === 'touchstart') {
+      this.defaultTouch.x = touch.pageX;
+      this.defaultTouch.y = touch.pageY;
+      this.defaultTouch.time = event.timeStamp;
+    } else if (event.type === 'touchend') {
+      let deltaX = touch.pageX - this.defaultTouch.x;
+      let deltaY = touch.pageY - this.defaultTouch.y;
+      let deltaTime = event.timeStamp - this.defaultTouch.time;
+
+      // simulte a swipe -> less than 500 ms and more than 60 px
+      if (deltaTime < 500) {
+        // touch movement lasted less than 500 ms
+        if (Math.abs(deltaX) > 60) {
+          // delta x is at least 60 pixels
+          if (deltaX > 0) {
+            this.doSwipeRight(event);
+          } else {
+            this.doSwipeLeft(event);
+          }
+        }
+
+        if (Math.abs(deltaY) > 60) {
+          // delta y is at least 60 pixels
+          if (deltaY > 0) {
+            this.doSwipeDown(event);
+          } else {
+            this.doSwipeUp(event);
+          }
+        }
+      }
+    }
+  }
+
+  // @ts-ignore
+  doSwipeLeft(event) {
+    this.logic.moveLeft()
+  }
+
+  // @ts-ignore
+  doSwipeRight(event) {
+    this.logic.moveRight()
+  }
+
+  // @ts-ignore
+  doSwipeUp(event) {
+    this.logic.moveUp()
+  }
+
+  // @ts-ignore
+  doSwipeDown(event) {
+    this.logic.moveDown()
   }
 
 }
