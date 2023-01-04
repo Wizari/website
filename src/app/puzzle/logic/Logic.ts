@@ -30,7 +30,6 @@ export class Logic {
     }
     this.createRandomCell()
     this.createRandomCell()
-    console.log(this.cellArr)
   }
 
   createRandomCell() {
