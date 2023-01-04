@@ -13,6 +13,7 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {MaterialModule} from "../material/material.module";
 import {PuzzleComponent} from './puzzle/component/puzzle.component';
 import {Logic} from "./puzzle/logic/Logic";
+import { MainPageComponent } from './main-page/main-page.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import {Logic} from "./puzzle/logic/Logic";
     AppComponent,
     MainFrameComponent,
     PuzzleComponent,
+    MainPageComponent,
   ],
   imports: [
     BrowserModule,

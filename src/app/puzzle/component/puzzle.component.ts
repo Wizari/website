@@ -8,14 +8,14 @@ import {Logic} from "../logic/Logic";
   styleUrls: ['./puzzle.component.scss']
 })
 
-@Injectable()
+// @Injectable()
 export class PuzzleComponent implements OnInit {
   public _app!: PIXI.Application
   private logic!: Logic;
 
 
-  @Input()
-  public devicePixelRatio = window.devicePixelRatio || 1;
+  // @Input()
+  // public devicePixelRatio = window.devicePixelRatio || 1;
 
 
   get app(): PIXI.Application<PIXI.ICanvas> {
